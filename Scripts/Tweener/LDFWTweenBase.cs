@@ -407,6 +407,12 @@ namespace LDFW.Tween
             burstFrameCount = framesNum;
             return this;
         }
+
+        public LDFWTweenBase BurstTweenBasedOnTime(float time)
+        {
+            burstTime = time;
+            return this;
+        }
         #endregion
 
         
