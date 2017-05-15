@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 namespace LDFW.Tween {
-    public class LDFWTweenPosition : LDFWTweenBase {
-        
-        protected override void PreStart () {
+    public class LDFWTweenPosition : LDFWTweenBaseThree
+    {
+
+        protected override void PreStart()
+        {
             curveCount = 3;
             startingValue = new float[curveCount];
             startingValue[0] = targetTransform.localPosition.x;

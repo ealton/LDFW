@@ -4,7 +4,8 @@ using System.Collections;
 
 namespace LDFW.Tween {
 
-    public class LDFWTweenShader : LDFWTweenBase {
+    public class LDFWTweenShader : LDFWTweenBaseFour
+    {
 
         public string shaderVariableName;
         public Material targetMaterial;
@@ -18,46 +19,44 @@ namespace LDFW.Tween {
             }
         }
 
-        public new LDFWTweenBase Init(int fromValue, int toValue, string shaderVariableName, float duration, float startDelay, Action endAction = null, 
-            bool autoStart = false, bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
+        public LDFWTweenBase Init(int fromValue, int toValue, string shaderVariableName, float duration, float startDelay, 
+            bool autoStart = false, Action endAction = null, 
+            bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
         {
             this.shaderVariableName = shaderVariableName;
             this.shaderVariableType = ShaderVariableType.INT;
 
-            return base.Init(new float[] { fromValue }, new float[] { toValue }, 
-                duration, startDelay, endAction, autoStart, autoDestroyComponent, autoDestroyGameObject);
+            return base.Init(new Vector4(fromValue, 0, 0, 0), new Vector4(toValue, 0, 0, 0), duration, startDelay, autoStart, endAction, autoDestroyComponent, autoDestroyGameObject);
         }
 
-        public new LDFWTweenBase InitFloat(float fromValue, float toValue, string shaderVariableName, float duration, float startDelay, Action endAction = null, 
-            bool autoStart = false, bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
+        public LDFWTweenBase InitFloat(float fromValue, float toValue, string shaderVariableName, float duration, float startDelay,
+            bool autoStart = false, Action endAction = null,
+            bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
         {
             this.shaderVariableName = shaderVariableName;
             this.shaderVariableType = ShaderVariableType.FLOAT;
 
-            return base.Init(new float[] { fromValue }, new float[] { toValue }, 
-                duration, startDelay, endAction, autoStart, autoDestroyComponent, autoDestroyGameObject);
+            return base.Init(new Vector4(fromValue, 0, 0, 0), new Vector4(toValue, 0, 0, 0), duration, startDelay, autoStart, endAction, autoDestroyComponent, autoDestroyGameObject);
         }
 
-        public LDFWTweenBase InitColor(Color fromValue, Color toValue, string shaderVariableName, float duration, float startDelay, Action endAction = null, 
-            bool autoStart = false, bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
+        public LDFWTweenBase InitColor(Color fromValue, Color toValue, string shaderVariableName, float duration, float startDelay,
+            bool autoStart = false, Action endAction = null, 
+            bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
         {
             this.shaderVariableName = shaderVariableName;
             this.shaderVariableType = ShaderVariableType.COLOR;
 
-            return base.Init(new float[] { fromValue.r, fromValue.g, fromValue.b, fromValue.a }, 
-                new float[] { toValue.r, toValue.g, toValue.b, toValue.a }, 
-                duration, startDelay, endAction, autoStart, autoDestroyComponent, autoDestroyGameObject);
+            return base.Init(fromValue, toValue, duration, startDelay, autoStart, endAction, autoDestroyComponent, autoDestroyGameObject);
         }
 
-        public LDFWTweenBase InitVector4(Vector4 fromValue, Vector4 toValue, string shaderVariableName, float duration, float startDelay, Action endAction = null, 
-            bool autoStart = false, bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
+        public LDFWTweenBase InitVector4(Vector4 fromValue, Vector4 toValue, string shaderVariableName, float duration, float startDelay,
+            bool autoStart = false, Action endAction = null, 
+            bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
         {
             this.shaderVariableName = shaderVariableName;
             this.shaderVariableType = ShaderVariableType.VECTOR4;
 
-            return base.Init(new float[] { fromValue.x, fromValue.y, fromValue.z, fromValue.w }, 
-                new float[] { toValue.x, toValue.y, toValue.z, toValue.w }, 
-                duration, startDelay, endAction, autoStart, autoDestroyComponent, autoDestroyGameObject);
+            return base.Init(fromValue, toValue, duration, startDelay, autoStart, endAction, autoDestroyComponent, autoDestroyGameObject);
         }
 
         protected override void PostCurrentValueCalculation()
@@ -86,6 +85,8 @@ namespace LDFW.Tween {
             COLOR,
             VECTOR4
         }
+
+
     }
 
 }

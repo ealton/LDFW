@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using System.Collections;
 
 namespace LDFW.Tween {
-    public class LDFWTweenUICanvasGroup : LDFWTweenBase {
+    public class LDFWTweenUICanvasGroup : LDFWTweenBaseOne {
 
         public new CanvasGroup targetTransform;
 

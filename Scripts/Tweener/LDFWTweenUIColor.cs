@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace LDFW.Tween {
     
-    public class LDFWTweenUIColor : LDFWTweenBase {
+    public class LDFWTweenUIColor : LDFWTweenBaseFour {
         
         private MaskableGraphic uiImageTarget;
         private Color currentColor;

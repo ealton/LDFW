@@ -2,7 +2,8 @@
 using System.Collections;
 
 namespace LDFW.Tween {
-    public class LDFWTweenScale : LDFWTweenBase {
+    public class LDFWTweenScale : LDFWTweenBaseThree
+    {
 
 
         protected override void PreStart () {

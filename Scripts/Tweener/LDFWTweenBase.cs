@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 using Random = UnityEngine.Random;
 
@@ -21,52 +18,50 @@ namespace LDFW.Tween
         public enum CurveStyle
         {
             Normal,
-            EasyStart,
-            EasyEnd,
-            EasyStartEasyEnd,
-            HardStartHardEnd,
-            BounceEnd4,
-            BounceEnd2,
+            EasyStart, EasyEnd,
+            EasyStartEasyEnd, HardStartHardEnd,
+            BounceEnd4, BounceEnd2,
         }
 
         // Public Variables
-        public Transform targetTransform = null;
+        public Transform                                targetTransform = null;
 
-        public bool autoPlay = false;
-        public bool useCurrentValueAsStartingValue = false;
-        public bool useRelativeValueBasedOnStartingValue = false;
-        public bool generateRandomCurveBasedOnFromAndTo = false;
-        public bool ignoreTimeScale = true;
-        public bool autoDestroyComponent = false;
-        public bool autoDestroyGameObject = false;
+        // Optional Controllers
+        public bool                                     autoPlay = false;
+        public bool                                     useCurrentValueAsStartingValue = false;
+        public bool                                     useRelativeValueBasedOnStartingValue = false;
+        public bool                                     generateRandomCurveBasedOnFromAndTo = false;
+        public bool                                     ignoreTimeScale = true;
+        public bool                                     autoDestroyComponent = false;
+        public bool                                     autoDestroyGameObject = false;
 
-        public float startDelay = 0f;
-        public float duration = 1f;
+        public float                                    startDelay = 0f;
+        public float                                    duration = 1f;
+        public float                                    targetTimeScale = 1;
 
-        public TweenStyle tweenStyle = TweenStyle.Once;
-        public CurveStyle curveStyle = CurveStyle.Normal;
+        public TweenStyle                               tweenStyle = TweenStyle.Once;
+        public CurveStyle                               curveStyle = CurveStyle.Normal;
 
 
-        public float[] fromValue;
-        public float[] toValue;
-        public AnimationCurve[] curveList;
+        [HideInInspector] public float[]                fromValue;
+        [HideInInspector] public float[]                toValue;
+        public AnimationCurve[]                         curveList;
         
 
-        public Action endAction;
+        public Action                                   endAction;
 
         // Private and protected variables
-        protected float[] startingValue;
-        protected float[] currentValue;
-        protected float[] diffValue;
-        protected float accumulatedTime = 0f;
-        protected bool isPlayingReverse = false;
-        protected bool isCurrentAnimationBackwards = false;
-        protected bool isTweenerPlaying = false;
-        protected int curveCount = 0;
-        protected int burstFrameCount = 0;
-        protected float burstTime = 0;
-
-        protected IEnumerator burstTweenIEnumerator = null;
+        protected float[]                               startingValue;
+        protected float[]                               currentValue;
+        protected float[]                               diffValue;
+        protected float                                 accumulatedTime = 0f;
+        protected bool                                  isPlayingReverse = false;
+        protected bool                                  isCurrentAnimationBackwards = false;
+        protected bool                                  isTweenerPlaying = false;
+        protected int                                   curveCount = 0;
+        protected int                                   burstFrameCount = 0;
+        protected float                                 burstTime = 0;
+        
 
 
 
@@ -82,63 +77,28 @@ namespace LDFW.Tween
             
             PreStart();
 
+            // Reinitialize fromValue and toValue if they're not setup properly
             if (fromValue == null || fromValue.Length < curveCount || toValue == null || toValue.Length < curveCount)
             {
                 fromValue = new float[curveCount];
                 toValue = new float[curveCount];
             }
 
+            // Init function
             Init();
 
+            // Start tweener if autoPlay flag is true
             if (autoPlay)
                 isTweenerPlaying = true;
         }
 
-        /// <summary>
-        /// Initialization
-        /// </summary>
-        /// <param name="fromValue">From value.</param>
-        /// <param name="toValue">To value.</param>
-        /// <param name="duration">Duration.</param>
-        /// <param name="startDelay">Start delay.</param>
-        /// <param name="endAction">End action.</param>
-        /// <param name="autoStart">If set to <c>true</c> auto start.</param>
-        /// <param name="autoDestroyComponent">If set to <c>true</c> auto destroy component.</param>
-        /// <param name="autoDestroyGameObject">If set to <c>true</c> auto destroy game object.</param>
-        public LDFWTweenBase Init(float[] fromValue, float[] toValue, float duration, float startDelay, Action endAction = null, 
-            bool autoStart = false, bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
-        {
-            // Generate fromValue array
-            this.fromValue = new float[fromValue.Length];
-            for (int i = 0; i < fromValue.Length; i++)
-                this.fromValue[i] = fromValue[i];
 
-            // Generate toValue array
-            this.toValue = new float[toValue.Length];
-            for (int i = 0; i < toValue.Length; i++)
-                this.toValue[i] = toValue[i];
-
-            // Assign other variables
-            this.accumulatedTime = 0f;
-            this.duration = duration;
-            this.startDelay = startDelay;
-            this.autoDestroyComponent = autoDestroyComponent;
-            this.autoDestroyGameObject = autoDestroyGameObject;
-            this.endAction = endAction;
-
-            Init();
-
-            if (autoStart)
-                isTweenerPlaying = true;
-
-            return this;
-        }
+        
 
         protected void Init()
         {
             accumulatedTime = 0f;
-
-
+            
             if (useRelativeValueBasedOnStartingValue)
             {
                 for (int i = 0; i < curveCount; i++)
@@ -167,25 +127,69 @@ namespace LDFW.Tween
                     GenerateRandomCurve(curveList[i]);
             }
 
-
-            if (autoDestroyComponent)
-            {
-                this.endAction += () =>
-                    {
-                        Destroy(this);
-                    };
-            }
-
-            if (autoDestroyGameObject)
-            {
-                this.endAction += () =>
-                    {
-                        Destroy(this.gameObject);
-                    };
-            }
-                
         }
         #endregion
+
+
+
+        #region PublicAPI
+        public LDFWTweenBase Init(float[] fromValue, float[] toValue, float duration, float startDelay, bool autoStart = false,
+            Action endAction = null, bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
+        {
+
+            if (fromValue.Length != toValue.Length)
+            {
+                Debug.LogError("Invalid initialization, from value and to value have different dimensions");
+                return null;
+            }
+
+            // Assign curveCount
+            curveCount = fromValue.Length;
+
+            // Generate fromValue and toValue arrays
+            this.fromValue = new float[curveCount];
+            this.toValue = new float[curveCount];
+            for (int i = 0; i < curveCount; i++)
+            {
+                this.fromValue[i] = fromValue[i];
+                this.toValue[i] = toValue[i];
+            }
+
+            // Assign other variables
+            this.accumulatedTime = 0f;
+            this.duration = duration;
+            this.startDelay = startDelay;
+            this.autoDestroyComponent = autoDestroyComponent;
+            this.autoDestroyGameObject = autoDestroyGameObject;
+            this.endAction = endAction;
+
+            Init();
+
+            if (autoStart)
+                isTweenerPlaying = true;
+
+            return this;
+        }
+
+        public LDFWTweenBase SetTweenerStyle(TweenStyle style)
+        {
+            this.tweenStyle = style;
+            return this;
+        }
+
+        public LDFWTweenBase SetCurveStyle(CurveStyle style)
+        {
+            this.curveStyle = style;
+            if (!generateRandomCurveBasedOnFromAndTo)
+            {
+                for (int i = 0; i < curveCount; i++)
+                    curveList[i] = GenerateAnimationCurve(curveStyle);
+            }
+
+            return this;
+        }
+        #endregion
+
 
 
         #region MainCalculation
@@ -196,7 +200,6 @@ namespace LDFW.Tween
 
         protected void UpdateCurrentValue()
         {
-
             // only processes if isTweenerPlaying is true
             if (!isTweenerPlaying && burstFrameCount <= 0 && burstTime <= 0)
                 return;
@@ -219,6 +222,20 @@ namespace LDFW.Tween
                     {
                         accumulatedTime = startDelay + duration;
                         isTweenerPlaying = false;
+
+                        if (this.autoDestroyComponent)
+                        {
+                            Destroy(this);
+                            return;
+                        }
+
+                        if (this.autoDestroyGameObject)
+                        {
+                            gameObject.SetActive(false);
+                            Destroy(gameObject);
+                            return;
+                        }
+
                         if (endAction != null)
                         {
                             endAction();
@@ -226,7 +243,7 @@ namespace LDFW.Tween
                     }
                 }
 
-                float timeScale = 1;
+                float timeScale = targetTimeScale;
                 if (!ignoreTimeScale)
                     timeScale = Time.timeScale;
                 
@@ -344,6 +361,11 @@ namespace LDFW.Tween
             return this;
         }
 
+        public float GetCurrentPercentage()
+        {
+            return Mathf.Clamp((accumulatedTime - startDelay) / duration, 0f, 1f);
+        }
+
         public LDFWTweenBase PauseTweener()
         {
             isTweenerPlaying = false;
@@ -387,7 +409,7 @@ namespace LDFW.Tween
         }
         #endregion
 
-
+        
 
         #region OtherFunctions
         protected void GenerateRandomCurve(AnimationCurve curve, float slices = 10f)

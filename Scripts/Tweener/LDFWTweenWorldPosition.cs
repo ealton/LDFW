@@ -2,7 +2,7 @@
 using System.Collections;
 
 namespace LDFW.Tween {
-    public class LDFWTweenWorldPosition : LDFWTweenBase {
+    public class LDFWTweenWorldPosition : LDFWTweenBaseThree {
 
         protected override void PreStart () {
             curveCount = 3;

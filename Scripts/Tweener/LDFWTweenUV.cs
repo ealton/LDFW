@@ -2,43 +2,34 @@
 using System.Collections;
 
 namespace LDFW.Tween {
-    /*
-    public class LDFWTweenUV : LDFWTweenBase {
+
+    
+    public class LDFWTweenUV : LDFWTweenBaseTwo {
 
 
         private Material material;
+        private string textureName = "_MainTex";
 
-        new void Awake () {
-            base.Awake ();
-            material = targetTransform.GetComponent<MeshRenderer> ().material;
+        public LDFWTweenBase SetTextureName(string name)
+        {
+            textureName = name;
+            return this;
         }
 
         protected override void PreStart () {
             if (useCurrentValueAsStartingValue) {
-                fromValue.x = material.GetTextureScale ("_MainTex").x;
-                fromValue.y = material.GetTextureScale ("_MainTex").y;
+                Vector2 textureScale = material.GetTextureScale("_MainTex");
+                startingValue[0] = textureScale.x;
+                startingValue[1] = textureScale.y;
             }
         }
 
-        new void Start () {
-            base.Start ();
-            useRelativeValueBasedOnStartingValue = false;
+        protected override void PostCurrentValueCalculation()
+        {
+            material.SetTextureScale("_MainTex", new Vector2(currentValue[0], currentValue[1]));
+            material.SetTextureOffset("_MainTex", new Vector2(-(currentValue[0] - 1) * 0.5f, -(currentValue[1] - 1) * 0.5f));
         }
-
-        new void Update () {
-            if (!isTweenerPlaying) {
-                return;
-            }
-            base.Update ();
-
-            if (accumulatedTime > startDelay) {
-
-                material.SetTextureScale ("_MainTex", new Vector2 (currentValue.x, currentValue.y));
-                material.SetTextureOffset ("_MainTex", new Vector2 (-(currentValue.x - 1) * 0.5f, -(currentValue.y - 1) * 0.5f));
-
-            }
-        }
-
+        
     }
-    */
+    
 }

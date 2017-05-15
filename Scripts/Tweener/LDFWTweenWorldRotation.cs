@@ -2,7 +2,8 @@
 using System.Collections;
 
 namespace LDFW.Tween {
-    public class LDFWTweenWorldRotation : LDFWTweenBase {
+    public class LDFWTweenWorldRotation : LDFWTweenBaseThree
+    {
 
 
         protected override void PreStart () {
