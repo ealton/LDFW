@@ -59,7 +59,7 @@ namespace LDFW.Model
             }
 
             meshSavePath = EditorGUILayout.TextField ("Save Path", meshSavePath);
-            if (GUILayout.Button("Save to project"))
+            if (GUILayout.Button("Save to file"))
             {
                 switch (currentMeshType)
                 {

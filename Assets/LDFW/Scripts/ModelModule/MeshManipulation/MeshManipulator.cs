@@ -6,16 +6,20 @@ using System;
 namespace LDFW.Model
 {
 
-    public class MeshManipulator : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
+
+    public class MeshManipulator : MonoBehaviour, IPointerClickHandler
     {
 
         public Camera                   raycastingCamera;
+        public Transform                draggingSphere;
+
+        private Transform               vertexSphere;
+        private int                     vertexSphereReferencingIndex;
         private Mesh                    originalMesh;
         private Mesh                    currentMesh;
         private MeshCollider            meshCollider;
         private Vector3[]               originalVertices;
         private Vector3[]               currentVertices;
-        private GameObject[]            vertexPositioner;
         private Vector3                 meshSize;
         private int                     vertexCount;
 
@@ -34,8 +38,6 @@ namespace LDFW.Model
                 currentVertices = currentMesh.vertices;
                 vertexCount = originalVertices.Length;
 
-                vertexPositioner = new GameObject[vertexCount];
-
                 foreach (var collider in GetComponents<Collider>())
                     DestroyImmediate (collider);
 
@@ -45,14 +47,18 @@ namespace LDFW.Model
                     raycastingCamera = Camera.main;
             }
         }
-        
-        public void OnPointerDown (PointerEventData eventData)
-        {
-        }
 
-        public void OnPointerUp (PointerEventData eventData)
+#if UNITY_EDITOR
+        private void Update()
         {
+            if (vertexSphere != null)
+            {
+                
+                currentVertices[vertexSphereReferencingIndex] = vertexSphere.localPosition;
+                currentMesh.vertices = currentVertices;
+            }
         }
+#endif
 
         public void OnPointerClick (PointerEventData eventData)
         {
@@ -61,14 +67,22 @@ namespace LDFW.Model
             Ray ray = raycastingCamera.ScreenPointToRay(eventData.position);
             if (meshCollider.Raycast (ray, out hit, raycastingCamera.farClipPlane))
             {
-                int closestVertexIndex = FindClosestVertexIndex(hit.point);
+                Debug.Log("hit point = " + hit.point);
+                if (vertexSphere != null)
+                    Destroy(vertexSphere.gameObject);
+
+                //vertexSphereReferencingIndex = closestVertexIndex;
+                vertexSphere = Instantiate(draggingSphere.gameObject).transform;
+                vertexSphere.name = "vertex";
+                vertexSphere.SetParent(transform);
+                vertexSphere.position = hit.point;
+                vertexSphere.gameObject.SetActive(true);
+
+                vertexSphereReferencingIndex = FindClosestVertexIndex(vertexSphere.localPosition);
+                vertexSphere.localPosition = currentVertices[vertexSphereReferencingIndex];
                 
-                if (vertexPositioner[closestVertexIndex] == null)
-                {
-                    GameObject newGO = new GameObject("vertex" + closestVertexIndex);
-                    newGO.transform.SetParent (transform);
-                    newGO.transform.localPosition = currentVertices[closestVertexIndex];
-                }
+                Debug.Log("Closest point = " + currentVertices[vertexSphereReferencingIndex].ToString());
+                
             }
         }
 
@@ -89,6 +103,11 @@ namespace LDFW.Model
             }
 
             return closestIndex;
+        }
+
+        public Mesh GetCurrentMesh()
+        {
+            return currentMesh;
         }
     }
 
