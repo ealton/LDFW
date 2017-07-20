@@ -21,19 +21,16 @@ namespace LDFW.UserInput
             }
             else
             {
-                InputModuleController.instance.RegisterCamera (this);
+                InputModuleController.Instance.RegisterCamera (this);
             }
         }
 
-        public RaycastHit? TryProcessInput (Vector2 screenPosition)
+        public RaycastHit TryProcessInput (Vector2 screenPosition)
         {
             Ray ray = targetCamera.ScreenPointToRay(screenPosition);
-            RaycastHit hit;
-            if (Physics.Raycast (ray, out hit))
-                return hit;
-            else
-                return null;
-            
+            RaycastHit hit = new RaycastHit();
+            Physics.Raycast(ray, out hit);
+            return hit;
         }
     }
 

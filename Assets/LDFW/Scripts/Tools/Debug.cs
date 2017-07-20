@@ -56,7 +56,7 @@ namespace LDFW.Tools
         
         static Debug()
         {
-            _instanceID = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/Tools/LDFW/Tools/Debug.cs").GetInstanceID();
+            _instanceID = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/LDFW/Scripts/Tools/Debug.cs").GetInstanceID();
             _logStackFrameList.Clear();
 
             GetConsoleWindowListView();

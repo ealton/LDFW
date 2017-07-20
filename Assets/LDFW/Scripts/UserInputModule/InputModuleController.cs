@@ -8,82 +8,186 @@ namespace LDFW.UserInput
     public class InputModuleController : MonoBehaviour
     {
 
+        private static InputModuleController _instance;
+        public static InputModuleController Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    GameObject go = new GameObject("LDFWInputModule");
+                    _instance = go.AddComponent<InputModuleController>();
+                    return _instance;
+                }
+                else
+                {
+                    return _instance;
+                }
+            }
+        }
 
-        public static InputModuleController instance;
         public List<CameraRaycaster>        inputCameras;
         public GameObject                   selectedObject;
-        public int                          maxTouchCount = 1;
+        public int                          maxTouchCount = 2;
 
+        private InputData[]                 touchInputArray;
+        private GameObject[]                selectedGameObject;
+        private InputData                   leftMouseButon;
+        private InputData                   rightMouseButton;
 
         private void Awake()
         {
-            if (instance != null)
+            if (_instance != null)
             {
-                Destroy (this);
+                DestroyImmediate(gameObject);
                 return;
             }
-            instance = this;
-            inputCameras = new List<CameraRaycaster> ();
+            _instance = this;
+            inputCameras = new List<CameraRaycaster>();
+            touchInputArray = new InputData[maxTouchCount];
+            for (int i = 0; i < maxTouchCount; i++)
+                touchInputArray[i] = new InputData();
+
+            leftMouseButon = new InputData();
+            rightMouseButton = new InputData();
         }
 
         private void Update()
         {
-            Debug.Log ("Touch count = " + Input.touchCount);
-            if (maxTouchCount > 0 && Input.touchCount > 0)
-            {
-                //for (int i=0; i)
-                for (int i=0; i<maxTouchCount && i<Input.touchCount; i++)
-                {
-                    ProcessTouchInput (Input.touches[i]);
-                }
-            }
+#if UNITY_EDITOR
+            ProcessMouseButton(leftMouseButon, 0);
+            ProcessMouseButton(rightMouseButton, 1);
+#else
+            ProcessTouchInput();
+#endif
         }
 
+
+
+        /// <summary>
+        /// Registers camRaycaster to list
+        /// </summary>
+        /// <param name="camRaycaster"></param>
         public void RegisterCamera(CameraRaycaster camRaycaster)
         {
             float camDepth = camRaycaster.targetCamera.depth;
             int cameraCount = inputCameras.Count;
-            for (int i=0; i<cameraCount; i++)
+            if (cameraCount == 0)
             {
-                if (inputCameras[i].targetCamera.depth < camDepth)
+                inputCameras.Insert(0, camRaycaster);
+            }
+            else
+            {
+
+                for (int i = 0; i < cameraCount; i++)
                 {
-                    inputCameras.Insert (i, camRaycaster);
+                    if (inputCameras[i].targetCamera.depth < camDepth)
+                    {
+                        inputCameras.Insert(i, camRaycaster);
+                        break;
+                    }
                 }
             }
         }
 
-        private void ProcessTouchInput(Touch touch)
+        /// <summary>
+        /// Removes camRaycaster from the list
+        /// </summary>
+        /// <param name="camRaycaster"></param>
+        public void UnRegisterCamera(CameraRaycaster camRaycaster)
         {
-            Debug.Log ("Touch position = " + touch.position.ToString ());
-            RaycastHit? hitNullable = GetRaycastTarget(touch.position);
-            if (hitNullable != null)
+            int cameraCount = inputCameras.Count;
+            for (int i = 0; i < cameraCount; i++)
             {
-                RaycastHit hit = (RaycastHit) hitNullable;
-                Debug.Log ("Touched " + hit.transform.name);
-
+                if (inputCameras[i] == camRaycaster)
+                {
+                    inputCameras.RemoveAt(i);
+                    break;
+                }
             }
         }
 
-        private RaycastHit? GetRaycastTarget(Vector2 screenPosition)
+        /// <summary>
+        /// Processes a touch
+        /// </summary>
+        private void ProcessTouchInput()
         {
-            RaycastHit? hit = null;
+            //if (Input.touchCount > 0)
+            //    ScreenPrinter.instance.Log("Touch count: " + Input.touchCount);
+
+            for (int i = 0; i < maxTouchCount; i++)
+            {
+                if (i < Input.touchCount)
+                {
+                    Touch touch = Input.GetTouch(i);
+                    //ScreenPrinter.instance.Log("Touch " + i + ": " + touch.position);
+                    switch (touch.phase)
+                    {
+                        case TouchPhase.Began:
+                            RaycastHit hit;
+                            Camera cam;
+                            GetRaycastTarget(touch.position, out hit, out cam);
+                            if (hit.transform != null)
+                                touchInputArray[i].MouseButtonBegin(hit.transform.gameObject, touch.position, cam);
+                            else
+                                touchInputArray[i].MouseButtonBegin(null, touch.position, cam);
+                            break;
+                        case TouchPhase.Moved:
+                            touchInputArray[i].MouseButtonUpdate(touch.position);
+                            break;
+                        case TouchPhase.Canceled:
+                        case TouchPhase.Ended:
+                            touchInputArray[i].MouseButtonEnd(touch.position);
+                            break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Process mouse button
+        /// </summary>
+        /// <param name="mouseButtonInputData"></param>
+        /// <param name="mouseButtonIndex"></param>
+        private void ProcessMouseButton(InputData mouseButtonInputData, int mouseButtonIndex)
+        {
+            if (Input.GetMouseButtonDown(mouseButtonIndex))
+            {
+                //ScreenPrinter.instance.Log("Mouse button down: " + mouseButtonIndex);
+                RaycastHit hit;
+                Camera cam;
+                GetRaycastTarget(Input.mousePosition, out hit, out cam);
+                if (hit.transform != null)
+                    mouseButtonInputData.MouseButtonBegin(hit.transform.gameObject, Input.mousePosition, cam);
+            }
+            else if (Input.GetMouseButton(mouseButtonIndex))
+            {
+                mouseButtonInputData.MouseButtonUpdate(Input.mousePosition);
+            }
+            else if (Input.GetMouseButtonUp(mouseButtonIndex))
+            {
+                mouseButtonInputData.MouseButtonEnd(Input.mousePosition);
+            }
+        }
+
+        /// <summary>
+        /// Finds the first raycast target
+        /// </summary>
+        /// <param name="screenPosition"></param>
+        /// <returns></returns>
+        private void GetRaycastTarget(Vector2 screenPosition, out RaycastHit hit, out Camera camera)
+        {
             foreach (var cam in inputCameras)
             {
-                hit = cam.TryProcessInput (screenPosition);
-                if (hit != null)
-                    return hit;
+                hit = cam.TryProcessInput(screenPosition);
+                camera = cam.targetCamera;
+                if (hit.transform != null)
+                    return;
             }
-            return null;
+            hit = new RaycastHit();
+            camera = null;
         }
-
-        /*
-        private Touch ConvertMouseToTouch(int mouseButtonID, int type, Vector2 mousePosition)
-        {
-            Touch touch = new Touch();
-            touch.position = mousePosition;
-        }
-        */
+        
     }
-
     
 }
