@@ -60,14 +60,9 @@ namespace LDFW.UserInput
             position = touch.position;
         }
 
-        public void TouchBegin(GameObject selectedObject, Vector2 pos, Camera cam)
-        {
-
-        }
-
         #region MouseInputs
 
-        public void MouseButtonBegin(GameObject selectedObject, Vector2 pos, Camera cam)
+        public void TouchBegin(GameObject selectedObject, Vector2 pos, Camera cam)
         {
             radius = 1;
             radiusVariance = 0;
@@ -103,7 +98,7 @@ namespace LDFW.UserInput
                 selectedTouchBegin.OnTouchBegin(this);
         }
 
-        public void MouseButtonUpdate(Vector2 position)
+        public void TouchMove(Vector2 position)
         {
             deltaPosition = position - this.position;
             this.position = position;
@@ -121,7 +116,7 @@ namespace LDFW.UserInput
             }
         }
 
-        public void MouseButtonEnd(Vector2 position)
+        public void TouchEnd(Vector2 position)
         {
             phase = InputDataPhase.End;
             deltaPosition = Vector2.zero;

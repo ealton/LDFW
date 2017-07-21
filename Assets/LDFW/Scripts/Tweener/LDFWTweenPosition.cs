@@ -14,7 +14,6 @@ namespace LDFW.Tween {
             startingValue[0] = targetTransform.localPosition.x;
             startingValue[1] = targetTransform.localPosition.y;
             startingValue[2] = targetTransform.localPosition.z;
-
         }
 
         protected override void PostCurrentValueCalculation()

@@ -25,6 +25,11 @@ namespace LDFW.UserInput
             }
         }
 
+        /// <summary>
+        /// Try to process input, returns RaycastHit
+        /// </summary>
+        /// <param name="screenPosition"></param>
+        /// <returns></returns>
         public RaycastHit TryProcessInput (Vector2 screenPosition)
         {
             Ray ray = targetCamera.ScreenPointToRay(screenPosition);
