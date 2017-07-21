@@ -3,6 +3,9 @@
 namespace LDFW.Tween
 {
 
+    /// <summary>
+    /// Initialization
+    /// </summary>
     public abstract class LDFWTweenBaseOne : LDFWTweenBase
     {
         public LDFWTweenBase Init(float fromValue, float toValue, float duration, float startDelay, bool autoStart = false,

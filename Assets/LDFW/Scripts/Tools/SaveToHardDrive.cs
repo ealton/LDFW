@@ -7,17 +7,20 @@ using UnityEditor;
 namespace LDFW.Tools
 {
     
+    /// <summary>
+    /// Save an obj to file as a .asset file
+    /// </summary>
     public class SaveToHardDrive
     {
-        public static void SaveToFile(Object mesh, string path)
+        public static void SaveToFile(Object obj, string path)
         {
-            if (mesh == null)
+            if (obj == null)
             {
                 Debug.LogError("Mesh is null!");
                 return;
             }
             #if UNITY_EDITOR
-            AssetDatabase.CreateAsset(mesh, path + ".asset");
+            AssetDatabase.CreateAsset(obj, path + ".asset");
             #endif
         }
     }

@@ -61,15 +61,20 @@ namespace LDFW.Tween
         protected int                                   curveCount = 0;
         protected int                                   burstFrameCount = 0;
         protected float                                 burstTime = 0;
-        
+
 
 
 
 
         #region Initialization
-        // PreStart is used to set the current values if any, it runs first in Start () method
+        /// <summary>
+        /// Used to set the current values if any, it runs first in Start method
+        /// </summary>
         protected abstract void PreStart();
 
+        /// <summary>
+        /// Start method
+        /// </summary>
         protected void Start()
         {
             if (targetTransform == null)
@@ -92,9 +97,9 @@ namespace LDFW.Tween
                 isTweenerPlaying = true;
         }
 
-
-        
-
+        /// <summary>
+        /// Initialization
+        /// </summary>
         protected void Init()
         {
             accumulatedTime = 0f;
@@ -133,6 +138,18 @@ namespace LDFW.Tween
 
 
         #region PublicAPI
+        /// <summary>
+        /// Public API - Re-initialize a tweener
+        /// </summary>
+        /// <param name="fromValue"></param>
+        /// <param name="toValue"></param>
+        /// <param name="duration"></param>
+        /// <param name="startDelay"></param>
+        /// <param name="autoStart"></param>
+        /// <param name="endAction"></param>
+        /// <param name="autoDestroyComponent"></param>
+        /// <param name="autoDestroyGameObject"></param>
+        /// <returns></returns>
         public LDFWTweenBase Init(float[] fromValue, float[] toValue, float duration, float startDelay, bool autoStart = false,
             Action endAction = null, bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
         {
@@ -171,12 +188,22 @@ namespace LDFW.Tween
             return this;
         }
 
+        /// <summary>
+        /// Set tweener style
+        /// </summary>
+        /// <param name="style"></param>
+        /// <returns></returns>
         public LDFWTweenBase SetTweenerStyle(TweenStyle style)
         {
             this.tweenStyle = style;
             return this;
         }
 
+        /// <summary>
+        /// Set curve style
+        /// </summary>
+        /// <param name="style"></param>
+        /// <returns></returns>
         public LDFWTweenBase SetCurveStyle(CurveStyle style)
         {
             this.curveStyle = style;
@@ -193,11 +220,17 @@ namespace LDFW.Tween
 
 
         #region MainCalculation
+        /// <summary>
+        /// Update method
+        /// </summary>
         protected void Update()
         {
             UpdateCurrentValue();
         }
 
+        /// <summary>
+        /// Update current value
+        /// </summary>
         protected void UpdateCurrentValue()
         {
             // only processes if isTweenerPlaying is true
@@ -263,13 +296,17 @@ namespace LDFW.Tween
             // increments accumualtedTime;
             accumulatedTime += Time.deltaTime;
         }
-
-        // runs right before currentValue has been calculated for this frame
+        
+        /// <summary>
+        /// Pre current value calculation, runs right before current value calculation
+        /// </summary>
         protected virtual void PreCurrentValueCalculation()
         {
         }
-
-        // runs right after currentValue has been calculated for this frame
+        
+        /// <summary>
+        /// Post current value calculation, runs right after current value calculation
+        /// </summary>
         protected virtual void PostCurrentValueCalculation()
         {
         }
@@ -278,6 +315,11 @@ namespace LDFW.Tween
 
 
         #region AnimationCurve
+        /// <summary>
+        /// Generates a new animation curve
+        /// </summary>
+        /// <param name="style"></param>
+        /// <returns></returns>
         protected virtual AnimationCurve GenerateAnimationCurve(CurveStyle style) {
             
             Keyframe[] keyFrames;
@@ -312,6 +354,13 @@ namespace LDFW.Tween
             return new AnimationCurve(keyFrames);
         }
 
+        /// <summary>
+        /// Get animation curve value
+        /// </summary>
+        /// <param name="curve"></param>
+        /// <param name="diffValue"></param>
+        /// <param name="fromValue"></param>
+        /// <returns></returns>
         protected virtual float GetValueBasedOnAnimationCurve(AnimationCurve curve, float diffValue, float fromValue)
         {
             if (isCurrentAnimationBackwards)
@@ -330,6 +379,12 @@ namespace LDFW.Tween
             }
         }
 
+        /// <summary>
+        /// Update animation curve
+        /// </summary>
+        /// <param name="curveIndex"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
         public LDFWTweenBase UpdateAnimationCurve(int curveIndex, CurveStyle style) 
         {
             if (curveIndex < curveList.Length)
@@ -343,47 +398,80 @@ namespace LDFW.Tween
 
 
         #region FlowControl
+        /// <summary>
+        /// Set to beginning
+        /// </summary>
+        /// <returns></returns>
         public LDFWTweenBase SetToBeginning()
         {
             accumulatedTime = startDelay;
             return this;
         }
 
+        /// <summary>
+        /// Set to end
+        /// </summary>
+        /// <returns></returns>
         public LDFWTweenBase SetToEndding()
         {
             accumulatedTime = startDelay + duration;
             return this;
         }
 
+        /// <summary>
+        /// Set to middle based on percentage of completion
+        /// </summary>
+        /// <param name="percent"></param>
+        /// <returns></returns>
         public LDFWTweenBase SetToPercentagePoint(float percent)
         {
             accumulatedTime = startDelay + duration * percent;
             return this;
         }
 
+        /// <summary>
+        /// Get current percentage
+        /// </summary>
+        /// <returns></returns>
         public float GetCurrentPercentage()
         {
             return Mathf.Clamp((accumulatedTime - startDelay) / duration, 0f, 1f);
         }
 
+        /// <summary>
+        /// Pause tweener
+        /// </summary>
+        /// <returns></returns>
         public LDFWTweenBase PauseTweener()
         {
             isTweenerPlaying = false;
             return this;
         }
 
+        /// <summary>
+        /// Resume tweener
+        /// </summary>
+        /// <returns></returns>
         public LDFWTweenBase ResumeTweener()
         {
             isTweenerPlaying = true;
             return this;
         }
-
+        
+        /// <summary>
+        /// Reset tweener
+        /// </summary>
+        /// <returns></returns>
         public LDFWTweenBase ResetTweener()
         {
             accumulatedTime = 0f;
             return this;
         }
 
+        /// <summary>
+        /// Play tweener
+        /// </summary>
+        /// <returns></returns>
         public LDFWTweenBase Play()
         {
             Init();
@@ -393,6 +481,10 @@ namespace LDFW.Tween
             return this;
         }
 
+        /// <summary>
+        /// Play reverse
+        /// </summary>
+        /// <returns></returns>
         public LDFWTweenBase PlayReverse()
         {
             Init();
@@ -402,12 +494,22 @@ namespace LDFW.Tween
             return this;
         }
 
+        /// <summary>
+        /// Burst tweener based on number of frames
+        /// </summary>
+        /// <param name="framesNum"></param>
+        /// <returns></returns>
         public LDFWTweenBase BurstTweenBasedOnFrames(int framesNum)
         {
             burstFrameCount = framesNum;
             return this;
         }
 
+        /// <summary>
+        /// Burst tweener based on time
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
         public LDFWTweenBase BurstTweenBasedOnTime(float time)
         {
             burstTime = time;
@@ -418,6 +520,11 @@ namespace LDFW.Tween
         
 
         #region OtherFunctions
+        /// <summary>
+        /// Generate a random curve
+        /// </summary>
+        /// <param name="curve"></param>
+        /// <param name="slices"></param>
         protected void GenerateRandomCurve(AnimationCurve curve, float slices = 10f)
         {
             while (curve.keys.Length > 0)
@@ -429,5 +536,6 @@ namespace LDFW.Tween
 
         }
         #endregion
+
     }
 }

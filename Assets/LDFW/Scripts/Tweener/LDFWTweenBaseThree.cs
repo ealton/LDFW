@@ -4,6 +4,9 @@ using System;
 namespace LDFW.Tween
 {
 
+    /// <summary>
+    /// Initialization
+    /// </summary>
     public abstract class LDFWTweenBaseThree : LDFWTweenBase {
 
         public LDFWTweenBase Init(Vector3 fromValue, Vector3 toValue, float duration, float startDelay, bool autoStart = false,

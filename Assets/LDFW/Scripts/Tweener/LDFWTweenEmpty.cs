@@ -6,10 +6,16 @@ using System.Collections.Generic;
 namespace LDFW.Tween
 {
 
-    public struct LDFWTweenEmptyEvent{
-        public float targetPercentage;
-        public Action eventAction;
+    public class LDFWTweenEmptyEvent
+    {
+        public float targetPercentage = 0;
+        public Action eventAction = null;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="percent"></param>
+        /// <param name="action"></param>
         public LDFWTweenEmptyEvent(float percent, Action action)
         {
             targetPercentage = percent;
@@ -20,15 +26,27 @@ namespace LDFW.Tween
     public class LDFWTweenEmpty : LDFWTweenBaseOne
     {
 
-        public List<LDFWTweenEmptyEvent> targetEventList;
+        private List<LDFWTweenEmptyEvent> targetEventList;
 
-
+        /// <summary>
+        /// Initialization
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="delay"></param>
+        /// <param name="eventList"></param>
+        /// <param name="autoPlay"></param>
+        /// <returns></returns>
         public LDFWTweenBase Init(float time, float delay, LDFWTweenEmptyEvent[] eventList, bool autoPlay = false)
         {
             SetTargetEventList(eventList);
             return base.Init(0, 0, time, delay, autoPlay);
         }
 
+        /// <summary>
+        /// Set target event list
+        /// </summary>
+        /// <param name="eventList"></param>
+        /// <returns></returns>
         public LDFWTweenEmpty SetTargetEventList(List<LDFWTweenEmptyEvent> eventList)
         {
             targetEventList = eventList;
@@ -37,6 +55,11 @@ namespace LDFW.Tween
             return this;
         }
 
+        /// <summary>
+        /// Set target event list
+        /// </summary>
+        /// <param name="eventList"></param>
+        /// <returns></returns>
         public LDFWTweenEmpty SetTargetEventList(LDFWTweenEmptyEvent[] eventList)
         {
             targetEventList = new List<LDFWTweenEmptyEvent>();
@@ -48,6 +71,11 @@ namespace LDFW.Tween
             return this;
         }
 
+        /// <summary>
+        /// Add event
+        /// </summary>
+        /// <param name="tweenEvent"></param>
+        /// <returns></returns>
         public LDFWTweenEmpty AddEvent(LDFWTweenEmptyEvent tweenEvent)
         {
             targetEventList.Add(tweenEvent);
@@ -56,16 +84,9 @@ namespace LDFW.Tween
             return this;
         }
 
-        protected override void PostCurrentValueCalculation()
-        {
-            float currentProgress = GetCurrentPercentage();
-            while (targetEventList != null && targetEventList.Count > 0 && currentProgress > targetEventList[0].targetPercentage)
-            {
-                targetEventList[0].eventAction();
-                targetEventList.RemoveAt(0);
-            }
-        }
-
+        /// <summary>
+        /// PreStart function
+        /// </summary>
         protected override void PreStart()
         {
             if (targetEventList == null)
@@ -75,17 +96,35 @@ namespace LDFW.Tween
             else
             {
                 targetEventList = DnVSort(targetEventList);
-
-                /*
-                string targetPercentageList = "";
-                foreach (var emptyEvent in targetEventList)
-                    targetPercentageList += " " + emptyEvent.targetPercentage;
-
-                Debug.Log("Sorted target percentage list = " + targetPercentageList);
-                */
+                
+                //string targetPercentageList = "";
+                //foreach (var emptyEvent in targetEventList)
+                //    targetPercentageList += " " + emptyEvent.targetPercentage;
+                //
+                //Debug.Log("Sorted target percentage list = " + targetPercentageList);
             }
         }
 
+        /// <summary>
+        /// Post current value calculation
+        /// </summary>
+        protected override void PostCurrentValueCalculation()
+        {
+            float currentProgress = GetCurrentPercentage();
+            while (targetEventList != null && targetEventList.Count > 0 && currentProgress > targetEventList[0].targetPercentage)
+            {
+                if (targetEventList[0].eventAction != null)
+                    targetEventList[0].eventAction();
+
+                targetEventList.RemoveAt(0);
+            }
+        }
+
+        /// <summary>
+        /// Divide and conquer sort based on target percentage
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
         private List<LDFWTweenEmptyEvent> DnVSort(List<LDFWTweenEmptyEvent> list)
         {
 
@@ -104,40 +143,31 @@ namespace LDFW.Tween
                 return list;
             }
 
-            // List.count > 2
+            // at this point, (List.count > 2) is true
             List<LDFWTweenEmptyEvent> leftList = new List<LDFWTweenEmptyEvent>();
             List<LDFWTweenEmptyEvent> rightList = new List<LDFWTweenEmptyEvent>();
             List<LDFWTweenEmptyEvent> middleList = new List<LDFWTweenEmptyEvent>();
 
             float pivot = list[list.Count / 2].targetPercentage;
-            
+
             foreach (var emptyEvent in list)
             {
                 if (emptyEvent.targetPercentage < pivot)
-                {
                     leftList.Add(emptyEvent);
-                }
                 else if (emptyEvent.targetPercentage > pivot)
-                {
                     rightList.Add(emptyEvent);
-                }
                 else
-                {
                     middleList.Add(emptyEvent);
-                }
             }
 
             leftList = DnVSort(leftList);
             rightList = DnVSort(rightList);
 
             foreach (var emptyEvent in middleList)
-            {
                 leftList.Add(emptyEvent);
-            }
+
             foreach (var emptyEvent in rightList)
-            {
                 leftList.Add(emptyEvent);
-            }
 
             return leftList;
         }
