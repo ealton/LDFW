@@ -20,27 +20,37 @@ namespace LDFW.UserInput
 
         private GameObject              selectedGameObject = null;
         private GameObject              previousSelectedGameObject = null;
+        private float                   lastTouchBeginTime = 0;
+        private float                   currentTouchBeginTime = 0;
+        private int                     consecutiveTouchBeginCount = 0;
+
         private ITouchBegin             selectedTouchBegin = null;
         private ITouchDrag              selectedTouchDrag = null;
         private ITouchEnd               selectedTouchEnd = null;
         private ITouchClick             selectedTouchClick = null;
         private ITouchDoubleClick       selectedTouchDoubleClick = null;
-        private float                   lastTouchBeginTime = 0;
-        private float                   currentTouchBeginTime = 0;
-        private int                     consecutiveTouchBeginCount = 0;
 
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public InputData()
         {
             Init();
         }
         
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="position"></param>
         public InputData(Vector2 position)
         {
             Init();
             this.position = position;
         }
 
+        /// <summary>
+        /// Initialization
+        /// </summary>
         public void Init()
         {
             this.selectedGameObject = null;
@@ -170,12 +180,12 @@ namespace LDFW.UserInput
 
     public enum InputDataPhase
     {
+        Init,
         Begin,
         Move,
         Stationary,
         End,
         Cancel,
-        Init,
     }
     
 }

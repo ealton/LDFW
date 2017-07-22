@@ -4,7 +4,7 @@ using System.Collections;
 using LDFW.UserInput;
 using System;
 
-public class Test3 : MonoBehaviour, ITouchBegin, ITouchDrag, ITouchEnd
+public class Test3 : MonoBehaviour, ITouchBegin, ITouchDrag, ITouchEnd, ITouchClick
 {
 
     private float distanceToCamera;
@@ -16,9 +16,13 @@ public class Test3 : MonoBehaviour, ITouchBegin, ITouchDrag, ITouchEnd
     public void OnTouchBegin(InputData input)
     {
         distanceToCamera = (input.camera.transform.position - transform.position).magnitude;
-        Debug.Log("distanceToCamera = " + distanceToCamera);
         renderingCamera = input.camera;
         initialPosition = transform.position;
+    }
+
+    public void OnTouchClick(InputData input)
+    {
+        Debug.Log("OuTouchClick!");
     }
 
     public void OnTouchDrag(InputData input)

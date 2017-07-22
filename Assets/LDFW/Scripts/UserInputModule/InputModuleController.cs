@@ -8,8 +8,8 @@ namespace LDFW.UserInput
     public class InputModuleController : MonoBehaviour
     {
 
-        private static InputModuleController _instance;
-        public static InputModuleController Instance
+        private static InputModuleController    _instance;
+        public static InputModuleController     Instance
         {
             get
             {
@@ -26,12 +26,14 @@ namespace LDFW.UserInput
             }
         }
 
-        public List<CameraRaycaster>        inputCameras;
-        public GameObject                   selectedObject;
-        public int                          maxTouchCount = 2;
+        public List<CameraRaycaster>            inputCameras;
+        public GameObject                       selectedObject;
+        public int                              maxTouchCount = 2;
 
-        private Dictionary<int, InputData>  touchInputDic;
-        private Dictionary<int, GameObject> selectedGameObjectDic;
+        private Dictionary<int, InputData>      touchInputDic;
+        private Dictionary<int, GameObject>     selectedGameObjectDic;
+        private int                             leftMouseButtonIndex = -1;
+        private int                             rightMouseButtonIndex = -2;
         
 
         private void Awake()
@@ -48,21 +50,16 @@ namespace LDFW.UserInput
             selectedGameObjectDic = new Dictionary<int, GameObject>();
 
 #if UNITY_EDITOR
-            touchInputDic.Add(0, new InputData());
-            touchInputDic.Add(1, new InputData());
-#else
-            for (int i = 2; i < maxTouchCount + 2; i++)
-                touchInputArray[i] = new InputData();
+            touchInputDic.Add(leftMouseButtonIndex, new InputData());
+            touchInputDic.Add(rightMouseButtonIndex, new InputData());
 #endif
-
-            
         }
 
         private void Update()
         {
 #if UNITY_EDITOR
-            ProcessMouseButton(touchInputDic[0], 0);
-            ProcessMouseButton(touchInputDic[1], 1);
+            ProcessMouseButton(touchInputDic[leftMouseButtonIndex], 0);
+            ProcessMouseButton(touchInputDic[rightMouseButtonIndex], 1);
 #else
             ProcessTouchInput();
 #endif
@@ -113,7 +110,7 @@ namespace LDFW.UserInput
             }
         }
 
-#if true || !UNITY_EDITOR
+#if !UNITY_EDITOR
         /// <summary>
         /// Processes a touch
         /// </summary>
@@ -122,13 +119,13 @@ namespace LDFW.UserInput
             //if (Input.touchCount > 0)
             //    ScreenPrinter.instance.Log("Touch count: " + Input.touchCount);
 
-            for (int i = 2; i < maxTouchCount + 2; i++)
+            for (int i = 0; i < maxTouchCount; i++)
             {
-                if (i - 2 < Input.touchCount)
+                if (i < Input.touchCount)
                 {
-                    Touch touch = Input.GetTouch(i - 2);
+                    Touch touch = Input.GetTouch(i);
                     int touchID = touch.fingerId;
-                    //ScreenPrinter.instance.Log("Touch " + i + ": " + touch.position);
+
                     switch (touch.phase)
                     {
                         case TouchPhase.Began:
@@ -137,28 +134,28 @@ namespace LDFW.UserInput
                             GetRaycastTarget(touch.position, out hit, out cam);
                             if (hit.transform != null && !IsObjectSelected(hit.transform.gameObject))
                             {
-                                if (touchInputDic[touchID] != null)
+                                if (touchInputDic.ContainsKey(touchID))
                                     touchInputDic.Remove(touchID);
 
                                 touchInputDic.Add(touchID, new InputData());
                                 touchInputDic[touchID].TouchBegin(hit.transform.gameObject, touch.position, cam);
 
-                                if (selectedGameObjectDic[touchID] != null)
-                                    selectedGameObjectDic.Remove(touchID);
-
-                                selectedGameObjectDic[touchID] = hit.transform.gameObject;
+                                if (selectedGameObjectDic.ContainsKey(touchID))
+                                    selectedGameObjectDic[touchID] = hit.transform.gameObject;
+                                else
+                                    selectedGameObjectDic.Add(touchID, hit.transform.gameObject);
                             }
                             break;
                         case TouchPhase.Moved:
-                            if (touchInputDic[touchID] != null)
+                            if (touchInputDic.ContainsKey(touchID) && selectedGameObjectDic.ContainsKey(touchID))
                                 touchInputDic[touchID].TouchMove(touch.position);
                             break;
                         case TouchPhase.Canceled:
                         case TouchPhase.Ended:
-                            if (touchInputDic[touchID] != null)
+                            if (touchInputDic.ContainsKey(touchID) && selectedGameObjectDic.ContainsKey(touchID))
                                 touchInputDic[touchID].TouchEnd(touch.position);
 
-                            if (selectedGameObjectDic[touchID] != null)
+                            if (selectedGameObjectDic.ContainsKey(touchID))
                                 selectedGameObjectDic.Remove(touchID);
                             break;
                     }
@@ -187,14 +184,14 @@ namespace LDFW.UserInput
                     selectedGameObjectDic[mouseButtonIndex] = hit.transform.gameObject;
                 }
             }
-            else if (Input.GetMouseButton(mouseButtonIndex) && selectedGameObjectDic[mouseButtonIndex] != null)
+            else if (Input.GetMouseButton(mouseButtonIndex) && selectedGameObjectDic.ContainsKey(mouseButtonIndex))
             {
                 mouseButtonInputData.TouchMove(Input.mousePosition);
             }
-            else if (Input.GetMouseButtonUp(mouseButtonIndex) && selectedGameObjectDic[mouseButtonIndex] != null)
+            else if (Input.GetMouseButtonUp(mouseButtonIndex) && selectedGameObjectDic.ContainsKey(mouseButtonIndex))
             {
                 mouseButtonInputData.TouchEnd(Input.mousePosition);
-                selectedGameObjectDic[mouseButtonIndex] = null;
+                selectedGameObjectDic.Remove(mouseButtonIndex);
             }
         }
 #endif
@@ -213,8 +210,7 @@ namespace LDFW.UserInput
                 if (hit.transform != null)
                     return;
             }
-
-            Debug.Log("Return null");
+            
             hit = new RaycastHit();
             camera = null;
         }

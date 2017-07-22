@@ -6,18 +6,18 @@ using System.Collections;
 namespace LDFW.Tween {
     public class LDFWTweenUICanvasGroup : LDFWTweenBaseOne {
 
-        public new CanvasGroup targetTransform;
+        public CanvasGroup targetCanvasGroup;
 
         protected override void PreStart () {
             curveCount = 1;
             startingValue = new float[curveCount];
-            startingValue[0] = targetTransform.alpha;
+            startingValue[0] = targetCanvasGroup.alpha;
 
         }
 
         protected override void PostCurrentValueCalculation()
         {
-            targetTransform.alpha = currentValue[0];
+            targetCanvasGroup.alpha = currentValue[0];
         }
 
     }

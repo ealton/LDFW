@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 namespace LDFW.UserInput
@@ -9,6 +10,8 @@ namespace LDFW.UserInput
 
         [HideInInspector]
         public Camera targetCamera;
+        public LayerMask layermask;
+        
 
 
         private void Start()
@@ -34,7 +37,10 @@ namespace LDFW.UserInput
         {
             Ray ray = targetCamera.ScreenPointToRay(screenPosition);
             RaycastHit hit = new RaycastHit();
-            Physics.Raycast(ray, out hit);
+
+            if (isActiveAndEnabled)
+                Physics.Raycast(ray, out hit, targetCamera.farClipPlane, layermask);
+
             return hit;
         }
     }
