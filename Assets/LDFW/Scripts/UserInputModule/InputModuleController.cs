@@ -27,7 +27,6 @@ namespace LDFW.UserInput
         }
 
         public List<CameraRaycaster>            inputCameras;
-        public GameObject                       selectedObject;
         public int                              maxTouchCount = 2;
 
         private Dictionary<int, InputData>      touchInputDic;
@@ -90,6 +89,7 @@ namespace LDFW.UserInput
                         break;
                     }
                 }
+                inputCameras.Insert(cameraCount, camRaycaster);
             }
         }
 
