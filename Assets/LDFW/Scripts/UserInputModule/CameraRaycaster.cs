@@ -5,35 +5,22 @@ using System.Collections;
 namespace LDFW.UserInput
 {
 
-    public class CameraRaycaster : MonoBehaviour
+    [RequireComponent(typeof(Camera))]
+    public class CameraRaycaster : BaseRaycaster
     {
 
-        [HideInInspector]
-        public Camera targetCamera;
-        public LayerMask layermask;
-        
-
-
-        private void Start()
+        protected override void Start()
         {
             targetCamera = GetComponent<Camera> ();
-            if (targetCamera == null)
-            {
-                Destroy (this);
-                return;
-            }
-            else
-            {
-                InputModuleController.Instance.RegisterCamera (this);
-            }
+            base.Start();
         }
 
         /// <summary>
-        /// Try to process input, returns RaycastHit
+        /// Process input, returns RaycastHit
         /// </summary>
         /// <param name="screenPosition"></param>
         /// <returns></returns>
-        public RaycastHit TryProcessInput (Vector2 screenPosition)
+        public override RaycasterHit ProcessInput(Vector2 screenPosition)
         {
             Ray ray = targetCamera.ScreenPointToRay(screenPosition);
             RaycastHit hit = new RaycastHit();
@@ -41,7 +28,7 @@ namespace LDFW.UserInput
             if (isActiveAndEnabled)
                 Physics.Raycast(ray, out hit, targetCamera.farClipPlane, layermask);
 
-            return hit;
+            return new RaycasterHit(hit);
         }
     }
 

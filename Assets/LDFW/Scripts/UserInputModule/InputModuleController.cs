@@ -26,7 +26,7 @@ namespace LDFW.UserInput
             }
         }
 
-        public List<CameraRaycaster>            inputCameras;
+        public List<BaseRaycaster>              raycasterList;
         public int                              maxTouchCount = 2;
 
         private Dictionary<int, InputData>      touchInputDic;
@@ -44,7 +44,7 @@ namespace LDFW.UserInput
             }
             _instance = this;
 
-            inputCameras = new List<CameraRaycaster>();
+            raycasterList = new List<BaseRaycaster>();
             touchInputDic = new Dictionary<int, InputData>();
             selectedGameObjectDic = new Dictionary<int, GameObject>();
 
@@ -70,26 +70,26 @@ namespace LDFW.UserInput
         /// Registers camRaycaster to list
         /// </summary>
         /// <param name="camRaycaster"></param>
-        public void RegisterCamera(CameraRaycaster camRaycaster)
+        public void RegisterCamera(BaseRaycaster camRaycaster)
         {
             float camDepth = camRaycaster.targetCamera.depth;
-            int cameraCount = inputCameras.Count;
+            int cameraCount = raycasterList.Count;
             if (cameraCount == 0)
             {
-                inputCameras.Insert(0, camRaycaster);
+                raycasterList.Insert(0, camRaycaster);
             }
             else
             {
 
                 for (int i = 0; i < cameraCount; i++)
                 {
-                    if (inputCameras[i].targetCamera.depth < camDepth)
+                    if (raycasterList[i].targetCamera.depth < camDepth)
                     {
-                        inputCameras.Insert(i, camRaycaster);
+                        raycasterList.Insert(i, camRaycaster);
                         break;
                     }
                 }
-                inputCameras.Insert(cameraCount, camRaycaster);
+                raycasterList.Insert(cameraCount, camRaycaster);
             }
         }
 
@@ -99,12 +99,12 @@ namespace LDFW.UserInput
         /// <param name="camRaycaster"></param>
         public void UnRegisterCamera(CameraRaycaster camRaycaster)
         {
-            int cameraCount = inputCameras.Count;
+            int cameraCount = raycasterList.Count;
             for (int i = 0; i < cameraCount; i++)
             {
-                if (inputCameras[i] == camRaycaster)
+                if (raycasterList[i] == camRaycaster)
                 {
-                    inputCameras.RemoveAt(i);
+                    raycasterList.RemoveAt(i);
                     break;
                 }
             }
@@ -175,7 +175,7 @@ namespace LDFW.UserInput
             if (Input.GetMouseButtonDown(mouseButtonIndex))
             {
                 //ScreenPrinter.instance.Log("Mouse button down: " + mouseButtonIndex);
-                RaycastHit hit;
+                RaycasterHit hit;
                 Camera cam;
                 GetRaycastTarget(Input.mousePosition, out hit, out cam);
                 if (hit.transform != null && !IsObjectSelected(hit.transform.gameObject))
@@ -201,17 +201,17 @@ namespace LDFW.UserInput
         /// </summary>
         /// <param name="screenPosition"></param>
         /// <returns></returns>
-        private void GetRaycastTarget(Vector2 screenPosition, out RaycastHit hit, out Camera camera)
+        private void GetRaycastTarget(Vector2 screenPosition, out RaycasterHit hit, out Camera camera)
         {
-            foreach (var cam in inputCameras)
+            foreach (var cam in raycasterList)
             {
-                hit = cam.TryProcessInput(screenPosition);
+                hit = cam.ProcessInput(screenPosition);
                 camera = cam.targetCamera;
                 if (hit.transform != null)
                     return;
             }
             
-            hit = new RaycastHit();
+            hit = new RaycasterHit();
             camera = null;
         }
 
