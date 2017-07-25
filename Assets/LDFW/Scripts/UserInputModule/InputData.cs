@@ -72,6 +72,12 @@ namespace LDFW.UserInput
 
         #region MouseInputs
 
+        /// <summary>
+        /// Begin phase of a touch
+        /// </summary>
+        /// <param name="selectedObject"></param>
+        /// <param name="pos"></param>
+        /// <param name="cam"></param>
         public void TouchBegin(GameObject selectedObject, Vector2 pos, Camera cam)
         {
             radius = 1;
@@ -108,6 +114,10 @@ namespace LDFW.UserInput
                 selectedTouchBegin.OnTouchBegin(this);
         }
 
+        /// <summary>
+        /// Move/Drag phase of a touch
+        /// </summary>
+        /// <param name="position"></param>
         public void TouchMove(Vector2 position)
         {
             deltaPosition = position - this.position;
@@ -126,6 +136,10 @@ namespace LDFW.UserInput
             }
         }
 
+        /// <summary>
+        /// End phase of a touch
+        /// </summary>
+        /// <param name="position"></param>
         public void TouchEnd(Vector2 position)
         {
             phase = InputDataPhase.End;
@@ -155,6 +169,11 @@ namespace LDFW.UserInput
 
         #region HelperFunctions
 
+        /// <summary>
+        /// Converts TouchPhase to InputDataPhase
+        /// </summary>
+        /// <param name="phase"></param>
+        /// <returns></returns>
         public static InputDataPhase TouchPhaseToInputDataPhase(TouchPhase phase)
         {
             switch (phase)
@@ -178,6 +197,9 @@ namespace LDFW.UserInput
 
     }
 
+    /// <summary>
+    /// Input data phase
+    /// </summary>
     public enum InputDataPhase
     {
         Init,

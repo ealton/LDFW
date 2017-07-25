@@ -23,6 +23,7 @@ namespace LDFW.UserInput
                 InputModuleController.Instance.RegisterCamera(this);
             }
         }
+
         public abstract RaycasterHit ProcessInput(Vector2 screenPosition);
     }
 

@@ -23,7 +23,10 @@ namespace LDFW.UserInput
         public int triangleIndex;
 
 
-
+        /// <summary>
+        /// Constructor, constructors from a RaycastHit
+        /// </summary>
+        /// <param name="raycastHit"></param>
         public RaycasterHit(RaycastHit raycastHit)
         {
             transform = raycastHit.transform;
@@ -47,6 +50,9 @@ namespace LDFW.UserInput
             }
         }
 
+        /// <summary>
+        /// Empty constructor
+        /// </summary>
         public RaycasterHit()
         {
         }
