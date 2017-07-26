@@ -23,6 +23,12 @@ namespace LDFW.UserInput
             Instance = this;
         }
 
+        /// <summary>
+        /// On pinch input received
+        /// </summary>
+        /// <param name="touch0"></param>
+        /// <param name="touch1"></param>
+        /// <returns></returns>
         public virtual bool OnPinchInputReceived(Touch touch0, Touch touch1)
         {
             if (touch0.phase == TouchPhase.Began || touch1.phase == TouchPhase.Began)
@@ -44,6 +50,9 @@ namespace LDFW.UserInput
             
         }
 
+        /// <summary>
+        /// On destroy
+        /// </summary>
         private void OnDestroy()
         {
             if (Instance == this)
