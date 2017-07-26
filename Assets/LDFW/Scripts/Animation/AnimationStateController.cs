@@ -3,11 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-using Version3.Common;
-
-namespace Version3.Common
-{
-
     
 
 
@@ -116,57 +111,56 @@ namespace Version3.Common
     }
 
 
-    [Serializable]
-    public class AnimationStateAction
+[Serializable]
+public class AnimationStateAction
+{
+
+    /// <summary>
+    /// Target percentage progress of this action
+    /// </summary>
+    private float                       triggerProgress = 0f;
+
+    /// <summary>
+    /// Call back action of this 
+    /// </summary>
+    private Action                      triggerAction = null;
+
+    /// <summary>
+    /// Has triggered or not
+    /// </summary>
+    private bool                        hasTriggered = false;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="progress"></param>
+    /// <param name="action"></param>
+    public AnimationStateAction(float progress, Action action)
     {
+        if (progress < 0 || progress > 1)
+            Debug.LogError("Progress should (- [0, 1]");
 
-        /// <summary>
-        /// Target percentage progress of this action
-        /// </summary>
-        private float                       triggerProgress = 0f;
+        triggerProgress = progress;
+        triggerAction = action;
+        hasTriggered = false;
+    }
 
-        /// <summary>
-        /// Call back action of this 
-        /// </summary>
-        private Action                      triggerAction = null;
+    /// <summary>
+    /// Validate the current progress, triggers the action if current progress is greater than trigger progress
+    /// </summary>
+    /// <param name="currentProgress"></param>
+    /// <returns></returns>
+    public bool CheckForAction(float currentProgress)
+    {
+        if (hasTriggered || triggerAction == null)
+            return true;
 
-        /// <summary>
-        /// Has triggered or not
-        /// </summary>
-        private bool                        hasTriggered = false;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="progress"></param>
-        /// <param name="action"></param>
-        public AnimationStateAction(float progress, Action action)
+        if (currentProgress > triggerProgress)
         {
-            if (progress < 0 || progress > 1)
-                Debug.LogError("Progress should (- [0, 1]");
-
-            triggerProgress = progress;
-            triggerAction = action;
-            hasTriggered = false;
+            triggerAction();
+            hasTriggered = true;
         }
 
-        /// <summary>
-        /// Validate the current progress, triggers the action if current progress is greater than trigger progress
-        /// </summary>
-        /// <param name="currentProgress"></param>
-        /// <returns></returns>
-        public bool CheckForAction(float currentProgress)
-        {
-            if (hasTriggered || triggerAction == null)
-                return true;
-
-            if (currentProgress > triggerProgress)
-            {
-                triggerAction();
-                hasTriggered = true;
-            }
-
-            return hasTriggered;
-        }
+        return hasTriggered;
     }
 }

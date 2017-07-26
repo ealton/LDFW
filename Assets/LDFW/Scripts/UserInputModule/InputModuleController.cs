@@ -8,6 +8,7 @@ namespace LDFW.UserInput
     public class InputModuleController : MonoBehaviour
     {
 
+        // Instance
         private static InputModuleController    _instance;
         public static InputModuleController     Instance
         {
@@ -24,11 +25,23 @@ namespace LDFW.UserInput
                     return _instance;
                 }
             }
+            private set
+            {
+                _instance = value;
+            }
         }
 
+        // ModuleSwitches
+        public bool                             allowPinch = false;
+
+        // Raycasters
         public List<BaseRaycaster>              raycasterList;
         public int                              maxTouchCount = 2;
 
+        // Other modules
+        private PinchController                 pinchController;
+
+        // Private variables
         private Dictionary<int, InputData>      touchInputDic;
         private Dictionary<int, GameObject>     selectedGameObjectDic;
         private int                             leftMouseButtonIndex = -1;
@@ -46,6 +59,9 @@ namespace LDFW.UserInput
 
             raycasterList = new List<BaseRaycaster>();
             touchInputDic = new Dictionary<int, InputData>();
+
+            pinchController = GetComponent<PinchController>();
+
             selectedGameObjectDic = new Dictionary<int, GameObject>();
 
 #if UNITY_EDITOR
@@ -118,6 +134,13 @@ namespace LDFW.UserInput
         {
             //if (Input.touchCount > 0)
             //    ScreenPrinter.instance.Log("Touch count: " + Input.touchCount);
+            
+            if (allowPinch && pinchController != null && Input.touchCount >= 2)
+            {
+                if (pinchController.OnPinchInputReceived(Input.GetTouch(0), Input.GetTouch(1)))
+                    return;
+            }
+            
 
             for (int i = 0; i < maxTouchCount; i++)
             {
@@ -129,7 +152,7 @@ namespace LDFW.UserInput
                     switch (touch.phase)
                     {
                         case TouchPhase.Began:
-                            RaycastHit hit;
+                            RaycasterHit hit;
                             Camera cam;
                             GetRaycastTarget(touch.position, out hit, out cam);
                             if (hit.transform != null && !IsObjectSelected(hit.transform.gameObject))
@@ -215,8 +238,19 @@ namespace LDFW.UserInput
             camera = null;
         }
 
+        /// <summary>
+        /// Cleanup
+        /// </summary>
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+                Instance = null;
+            }
+        }
 
-#region HelperFunctions
+        #region HelperFunctions
         /// <summary>
         /// Checks if the gameObject is selected by any touches
         /// </summary>
