@@ -6,18 +6,24 @@ namespace LDFW.Tween
 
     public abstract class LDFWTweenBaseTwo : LDFWTweenBase
     {
-        /// <summary>
-        /// Initialization
-        /// </summary>
-        /// <param name="fromValue"></param>
-        /// <param name="toValue"></param>
-        /// <param name="duration"></param>
-        /// <param name="startDelay"></param>
-        /// <param name="autoStart"></param>
-        /// <param name="endAction"></param>
-        /// <param name="autoDestroyComponent"></param>
-        /// <param name="autoDestroyGameObject"></param>
-        /// <returns></returns>
+
+        public Vector2 fromValueVec;
+        public Vector2 toValueVec;
+
+        protected override void PreStart()
+        {
+            curveCount = 2;
+            fromValue = new float[curveCount];
+            fromValue[0] = fromValueVec.x;
+            fromValue[1] = fromValueVec.y;
+
+            toValue = new float[curveCount];
+            toValue[0] = toValueVec.x;
+            toValue[1] = toValueVec.y;
+
+        }
+
+
         public LDFWTweenBase Init(Vector2 fromValue, Vector2 toValue, float duration, float startDelay, bool autoStart = false,
             Action endAction = null, bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
         {

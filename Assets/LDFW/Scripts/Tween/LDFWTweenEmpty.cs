@@ -89,6 +89,8 @@ namespace LDFW.Tween
         /// </summary>
         protected override void PreStart()
         {
+            base.PreStart();
+
             if (targetEventList == null)
             {
                 targetEventList = new List<LDFWTweenEmptyEvent>();
@@ -96,12 +98,6 @@ namespace LDFW.Tween
             else
             {
                 targetEventList = DnVSort(targetEventList);
-                
-                //string targetPercentageList = "";
-                //foreach (var emptyEvent in targetEventList)
-                //    targetPercentageList += " " + emptyEvent.targetPercentage;
-                //
-                //Debug.Log("Sorted target percentage list = " + targetPercentageList);
             }
         }
 

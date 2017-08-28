@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace LDFW.Tween {
-    public class LDFWTweenCameraFieldOfView : LDFWTweenBaseOne {
+namespace LDFW.Tween
+{
+
+    public class LDFWTweenCameraFieldOfView : LDFWTweenBaseOne
+    {
 
         private Camera targetCamera;
 
-        void Awake () {
-            targetCamera = GetComponent<Camera> ();
+        void Awake()
+        {
+            targetCamera = GetComponent<Camera>();
         }
 
         public LDFWTweenCameraFieldOfView SetCamera(Camera cam)
@@ -16,11 +20,6 @@ namespace LDFW.Tween {
             return this;
         }
 
-        protected override void PreStart () {
-            if (targetCamera != null)
-                startingValue[0] = targetCamera.fieldOfView;
-            
-        }
 
         protected override void PostCurrentValueCalculation()
         {

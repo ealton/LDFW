@@ -74,10 +74,6 @@ namespace LDFW.Tween {
             }
         }
 
-        protected override void PreStart () {
-            startingValue[0] = GetTargetValue ();
-        }
-
         protected override void PostCurrentValueCalculation()
         {
             if (target != null) {

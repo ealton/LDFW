@@ -4,6 +4,7 @@ using System.Collections;
 
 namespace LDFW.Tween
 {
+
     public class LDFWTweenUIImageFilledRate : LDFWTweenBaseOne
     {
 
@@ -27,12 +28,8 @@ namespace LDFW.Tween
                 targetTransform = GetComponent<Transform>();
             
             targetImage = (targetTransform as RectTransform).GetComponent<Image>();
-        }
 
-        protected override void PreStart()
-        {
-            if (targetImage != null)
-                startingValue[0] = targetImage.fillAmount;
+            Debug.Assert(targetImage != null, "Couldn't find target image");
         }
 
         protected override void PostCurrentValueCalculation()
