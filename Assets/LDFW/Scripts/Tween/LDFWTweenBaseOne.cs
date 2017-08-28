@@ -24,6 +24,8 @@ namespace LDFW.Tween
         public LDFWTweenBase Init(float fromValue, float toValue, float duration, float startDelay, bool autoStart = false,
             Action endAction = null, bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
         {
+            fromValueFloat = fromValue;
+            toValueFloat = toValue;
 
             return Init(new float[] { fromValue }, new float[] { toValue },
                 duration, startDelay, autoStart, endAction, autoDestroyComponent, autoDestroyGameObject);

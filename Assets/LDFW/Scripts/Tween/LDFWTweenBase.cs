@@ -102,22 +102,24 @@ namespace LDFW.Tween
 
             currentValue = new float[curveCount];
             diffValue = new float[curveCount];
-            curveList = new AnimationCurve[curveCount];
-
+            
             for (int i = 0; i < curveCount; i++)
             {
                 currentValue[i] = fromValue[i];
                 diffValue[i] = toValue[i] - fromValue[i];
             }
 
-            curveList = new AnimationCurve[curveCount];
-
-            for (int i = 0; i < curveCount; i++)
+            if (curveStyle == CurveStyle.Custom && curveList == null)
             {
-                curveList[i] = GenerateAnimationCurve(curveStyle);
-                if (generateRandomCurveBasedOnFromAndTo)
-                    GenerateRandomCurve(curveList[i], 1);
+                curveList = new AnimationCurve[curveCount];
+                for (int i = 0; i < curveCount; i++)
+                {
+                    curveList[i] = GenerateAnimationCurve(curveStyle);
+                    if (generateRandomCurveBasedOnFromAndTo)
+                        GenerateRandomCurve(curveList[i], 1);
+                }
             }
+
 
         }
         #endregion

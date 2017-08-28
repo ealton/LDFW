@@ -32,6 +32,9 @@ namespace LDFW.Tween
         public LDFWTweenBase Init(Vector4 fromValue, Vector4 toValue, float duration, float startDelay, bool autoStart = false,
             Action endAction = null, bool autoDestroyComponent = false, bool autoDestroyGameObject = false)
         {
+            this.fromValueVec = fromValue;
+            this.toValueVec = toValue;
+
             return Init(new float[] { fromValue.x, fromValue.y, fromValue.z, fromValue.w }, new float[] { toValue.x, toValue.y, toValue.z, toValue.w },
                 duration, startDelay, autoStart, endAction, autoDestroyComponent, autoDestroyGameObject);
         }
