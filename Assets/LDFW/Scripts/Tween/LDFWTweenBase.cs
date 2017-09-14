@@ -39,7 +39,6 @@ namespace LDFW.Tween
         protected float[]                               currentValue;
         protected float[]                               diffValue;
         protected float                                 accumulatedTime = 0f;
-        protected bool                                  isPlayingReverse = false;
         protected bool                                  isCurrentAnimationBackwards = false;
         protected bool                                  isTweenerPlaying = false;
         protected int                                   curveCount = 0;
@@ -102,7 +101,7 @@ namespace LDFW.Tween
 
             currentValue = new float[curveCount];
             diffValue = new float[curveCount];
-            
+
             for (int i = 0; i < curveCount; i++)
             {
                 currentValue[i] = fromValue[i];
@@ -196,10 +195,19 @@ namespace LDFW.Tween
         public LDFWTweenBase SetCurveStyle(CurveStyle style)
         {
             this.curveStyle = style;
-            if (!generateRandomCurveBasedOnFromAndTo)
+
+            if (curveStyle == CurveStyle.Custom)
             {
+                curveList = new AnimationCurve[curveCount];
+
                 for (int i = 0; i < curveCount; i++)
                     curveList[i] = GenerateAnimationCurve(curveStyle);
+
+                if (generateRandomCurveBasedOnFromAndTo)
+                {
+                    for (int i = 0; i < curveCount; i++)
+                        GenerateRandomCurve(curveList[i], 1);
+                }
             }
 
             return this;
@@ -212,6 +220,9 @@ namespace LDFW.Tween
         /// <returns></returns>
         public LDFWTweenBase SetCurve(Keyframe[] keyFrames)
         {
+            if (curveStyle != CurveStyle.Custom)
+                SetCurveStyle(CurveStyle.Custom);
+
             for (int i = 0; i < curveCount; i++)
                 curveList[i] = new AnimationCurve(keyFrames);
 
@@ -226,6 +237,9 @@ namespace LDFW.Tween
         /// <returns></returns>
         public LDFWTweenBase SetCurve(Keyframe[] keyFrames, int curveIndex)
         {
+            if (curveStyle != CurveStyle.Custom)
+                SetCurveStyle(CurveStyle.Custom);
+
             if (curveIndex < curveList.Length)
                 curveList[curveIndex] = new AnimationCurve(keyFrames);
 
@@ -321,7 +335,15 @@ namespace LDFW.Tween
             if (!isTweenerPlaying && burstFrameCount <= 0 && burstTime <= 0)
                 return;
 
+            UpdateCurrentValueCore();
+        }
 
+        /// <summary>
+        /// Update current value core
+        /// </summary>
+        protected void UpdateCurrentValueCore()
+        {
+        
             if (accumulatedTime >= startDelay)
             {
                 // Pre currentValue calculation
@@ -513,17 +535,11 @@ namespace LDFW.Tween
         {
             if (isCurrentAnimationBackwards)
             {
-                if (isPlayingReverse)
-                    return curve.Evaluate((accumulatedTime - startDelay) / duration) * diffValue + fromValue;
-                else
-                    return curve.Evaluate((duration - (accumulatedTime - startDelay)) / duration) * diffValue + fromValue;
+                return curve.Evaluate((duration - (accumulatedTime - startDelay)) / duration) * diffValue + fromValue;
             }
             else
             {
-                if (isPlayingReverse)
-                    return curve.Evaluate((duration - (accumulatedTime - startDelay)) / duration) * diffValue + fromValue;
-                else
-                    return curve.Evaluate((accumulatedTime - startDelay) / duration) * diffValue + fromValue;
+                return curve.Evaluate((accumulatedTime - startDelay) / duration) * diffValue + fromValue;
             }
         }
 
@@ -553,6 +569,7 @@ namespace LDFW.Tween
         public LDFWTweenBase SetToBeginning()
         {
             accumulatedTime = startDelay;
+            UpdateCurrentValueCore();
             return this;
         }
 
@@ -563,6 +580,7 @@ namespace LDFW.Tween
         public LDFWTweenBase SetToEndding()
         {
             accumulatedTime = startDelay + duration;
+            UpdateCurrentValueCore();
             return this;
         }
 
@@ -574,6 +592,7 @@ namespace LDFW.Tween
         public LDFWTweenBase SetToPercentagePoint(float percent)
         {
             accumulatedTime = startDelay + duration * percent;
+            UpdateCurrentValueCore();
             return this;
         }
 
@@ -583,7 +602,10 @@ namespace LDFW.Tween
         /// <returns></returns>
         public float GetCurrentPercentage()
         {
-            return Mathf.Clamp((accumulatedTime - startDelay) / duration, 0f, 1f);
+            if (isCurrentAnimationBackwards)
+                return Mathf.Clamp(1 - (accumulatedTime - startDelay) / duration, 0f, 1f);
+            else
+                return Mathf.Clamp((accumulatedTime - startDelay) / duration, 0f, 1f);
         }
 
         /// <summary>
@@ -621,12 +643,12 @@ namespace LDFW.Tween
         /// </summary>
         /// <param name="startingPercentage"></param>
         /// <returns></returns>
-        public LDFWTweenBase Play(float startingPercentage = 0)
+        public LDFWTweenBase Play(float startingPercentage = 0, bool isAnimationBackwards = false)
         {
             startingPercentage = Mathf.Clamp(startingPercentage, 0, 1);
-            SetToPercentagePoint(startingPercentage);
-            isPlayingReverse = false;
+            isCurrentAnimationBackwards = isAnimationBackwards;
             isTweenerPlaying = true;
+            SetToPercentagePoint(startingPercentage);
             return this;
         }
 
@@ -637,7 +659,7 @@ namespace LDFW.Tween
         public LDFWTweenBase PlayWithDelay()
         {
             accumulatedTime = 0;
-            isPlayingReverse = false;
+            isCurrentAnimationBackwards = false;
             isTweenerPlaying = true;
             return this;
         }
@@ -649,9 +671,8 @@ namespace LDFW.Tween
         /// <returns></returns>
         public LDFWTweenBase PlayReverse(float startingPercentage = 1)
         {
-            Play(startingPercentage);
-            isPlayingReverse = true;
-            return this;
+            Play(1 - startingPercentage, true);
+            return this.SetTweenerStyle(TweenStyle.Once);
         }
 
         /// <summary>

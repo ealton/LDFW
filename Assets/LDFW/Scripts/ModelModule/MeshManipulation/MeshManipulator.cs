@@ -13,6 +13,10 @@ namespace LDFW.Model
         public Camera                   raycastingCamera;
         public Transform                draggingSphere;
 
+
+        [ContextMenuItem("Save", "SaveMesh")]
+        public string                   savePath = "Assets/";
+
         private Transform               vertexSphere;
         private int                     vertexSphereReferencingIndex;
         private Mesh                    originalMesh;
@@ -108,6 +112,11 @@ namespace LDFW.Model
         public Mesh GetCurrentMesh()
         {
             return currentMesh;
+        }
+
+        public void SaveMesh()
+        {
+            LDFW.Tools.SaveToHardDrive.SaveAssetToFile(currentMesh, savePath);
         }
     }
 

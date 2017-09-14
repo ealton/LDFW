@@ -9,7 +9,7 @@ namespace LDFW.Model
     public static class Extensions
     {
         /// <summary>
-        /// Pring mesh data
+        /// Print mesh data
         /// </summary>
         /// <param name="mesh"></param>
         public static void PrintMeshData(this Mesh mesh)

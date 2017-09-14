@@ -109,10 +109,12 @@ namespace LDFW.Tween
             float currentProgress = GetCurrentPercentage();
             while (targetEventList != null && targetEventList.Count > 0 && currentProgress > targetEventList[0].targetPercentage)
             {
-                if (targetEventList[0].eventAction != null)
-                    targetEventList[0].eventAction();
-
+                Action action = targetEventList[0].eventAction;
                 targetEventList.RemoveAt(0);
+
+                if (action != null)
+                    action();
+
             }
         }
 

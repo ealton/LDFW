@@ -4,7 +4,7 @@ using UnityEditor;
 namespace LDFW.Model
 {
 
-    [CustomEditor (typeof (MeshGenerator))]
+    [CustomEditor(typeof(MeshGenerator))]
     public class MeshGeneratorEditor : Editor
     {
         public enum MeshType
@@ -32,13 +32,13 @@ namespace LDFW.Model
 
 
         private string meshSavePath = "Assets/";
-        
-        public override void OnInspectorGUI ()
+
+        public override void OnInspectorGUI()
         {
 
             //EditorGUILayout.TextArea
-            
-            currentMeshType = (MeshType) EditorGUILayout.EnumPopup("Mesh Type", currentMeshType);
+
+            currentMeshType = (MeshType)EditorGUILayout.EnumPopup("Mesh Type", currentMeshType);
 
             if (currentMeshType == MeshType.DoubleSidedPlane)
             {
@@ -55,32 +55,38 @@ namespace LDFW.Model
             }
             else if (currentMeshType == MeshType.Mesh)
             {
-                targetMesh = (Mesh) EditorGUILayout.ObjectField("Target Mesh", targetMesh, typeof(Mesh), true);
+                targetMesh = (Mesh)EditorGUILayout.ObjectField("Target Mesh", targetMesh, typeof(Mesh), true);
             }
 
-            meshSavePath = EditorGUILayout.TextField ("Save Path", meshSavePath);
-            if (GUILayout.Button("Save to file"))
+            meshSavePath = EditorGUILayout.TextField("Save Path", meshSavePath);
+            if (GUILayout.Button("Save to project"))
             {
                 switch (currentMeshType)
                 {
                     case MeshType.DoubleSidedPlane:
                         if (planeLengthSegmentCount < 1 || planeDepthSegmentCount < 1)
                         {
-                            Debug.LogError ("Segment count must be greater than 0");
+                            Debug.LogError("Segment count must be greater than 0");
                             break;
                         }
 
-                        LDFW.Tools.SaveToHardDrive.SaveToFile(MeshGenerator.GenerateDoubleSidedPlane (planeSize, planeLengthSegmentCount, planeDepthSegmentCount), meshSavePath);
+                        LDFW.Tools.SaveToHardDrive.SaveAssetToFile(MeshGenerator.GenerateDoubleSidedPlane(planeSize, planeLengthSegmentCount, planeDepthSegmentCount), meshSavePath);
                         break;
                     case MeshType.Cube:
+                        if (cubeXSegmentCount < 1 || cubeYSegmentCount < 1 || cubeZSegmentCount < 1)
+                        {
+                            Debug.LogError("Segment count must be greater than 0");
+                            break;
+                        }
 
+                        LDFW.Tools.SaveToHardDrive.SaveAssetToFile(MeshGenerator.GenerateCube(cubeSize, new Vector3(cubeXSegmentCount, cubeYSegmentCount, cubeZSegmentCount)), meshSavePath);
                         break;
                     case MeshType.Mesh:
                         Mesh newMesh = MeshGenerator.DuplicateMesh(targetMesh);
                         if (newMesh == null)
                             Debug.LogError("NewMesh is null!");
                         else
-                            LDFW.Tools.SaveToHardDrive.SaveToFile(MeshGenerator.DuplicateMesh(targetMesh), meshSavePath);
+                            LDFW.Tools.SaveToHardDrive.SaveAssetToFile(MeshGenerator.DuplicateMesh(targetMesh), meshSavePath);
                         break;
                 }
             }

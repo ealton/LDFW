@@ -32,17 +32,19 @@ namespace LDFW.Tween
 
             if (myTarget.curveStyle == CurveStyle.Custom)
             {
-                if (myTarget.curveList == null || myTarget.curveList.Length != 3)
+                if (myTarget.curveList == null || myTarget.curveList.Length != 4)
                 {
                     myTarget.curveList = new AnimationCurve[3];
                     myTarget.curveList[0] = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
                     myTarget.curveList[1] = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
                     myTarget.curveList[2] = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
+                    myTarget.curveList[3] = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
                 }
 
                 myTarget.curveList[0] = EditorGUILayout.CurveField("X Curve", myTarget.curveList[0]);
                 myTarget.curveList[1] = EditorGUILayout.CurveField("Y Curve", myTarget.curveList[1]);
                 myTarget.curveList[2] = EditorGUILayout.CurveField("Z Curve", myTarget.curveList[2]);
+                myTarget.curveList[3] = EditorGUILayout.CurveField("W Curve", myTarget.curveList[2]);
 
                 myTarget.generateRandomCurveBasedOnFromAndTo = EditorGUILayout.Toggle("Use random curve", myTarget.generateRandomCurveBasedOnFromAndTo);
             }

@@ -32,7 +32,7 @@ namespace LDFW.Tween
 
             if (myTarget.curveStyle == CurveStyle.Custom)
             {
-                if (myTarget.curveList == null || myTarget.curveList.Length != 3)
+                if (myTarget.curveList == null || myTarget.curveList.Length != 2)
                 {
                     myTarget.curveList = new AnimationCurve[2];
                     myTarget.curveList[0] = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));

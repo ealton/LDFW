@@ -140,6 +140,74 @@ namespace LDFW.Model
             }
 
             return Instantiate(targetMesh);
+                
+            /*
+            int verticesCount =     targetMesh.vertices == null ?       0 : targetMesh.vertices.Length;
+            int triangleCount =     targetMesh.triangles == null ?      0 : targetMesh.triangles.Length;
+            int uvCount =           targetMesh.uv == null ?             0 : targetMesh.uv.Length;
+            int uv2Count =          targetMesh.uv2 == null ?            0 : targetMesh.uv2.Length;
+            int uv3Count =          targetMesh.uv3 == null ?            0 : targetMesh.uv3.Length;
+            int uv4Count =          targetMesh.uv4 == null ?            0 : targetMesh.uv4.Length;
+
+            Mesh newMesh = new Mesh();
+
+            if (verticesCount > 0)
+            {
+                Vector3[] vertices = new Vector3[verticesCount];
+                for (int i = 0; i < verticesCount; i++)
+                    vertices[i] = targetMesh.vertices[i];
+
+                newMesh.vertices = vertices;
+            }
+
+            if (triangleCount > 0)
+            {
+                int[] triangles = new int[triangleCount];
+                for (int i = 0; i < triangleCount; i++)
+                    triangles[i] = targetMesh.triangles[i];
+
+                newMesh.triangles = triangles;
+            }
+
+            if (uvCount > 0)
+            {
+                Vector2[] uvs = new Vector2[uvCount];
+                for (int i = 0; i < uvCount; i++)
+                    uvs[i] = targetMesh.uv[i];
+
+                newMesh.uv = uvs;
+            }
+
+            if (uv2Count > 0)
+            {
+                Vector2[] uv2s = new Vector2[uv2Count];
+                for (int i = 0; i < uv2Count; i++)
+                    uv2s[i] = targetMesh.uv2[i];
+
+                newMesh.uv2 = uv2s;
+            }
+
+            if (uv3Count > 0)
+            {
+                Vector2[] uv3s = new Vector2[uv3Count];
+                for (int i = 0; i < uv3Count; i++)
+                    uv3s[i] = targetMesh.uv3[i];
+
+                newMesh.uv3 = uv3s;
+            }
+
+            if (uv4Count > 0)
+            {
+                Vector2[] uv4s = new Vector2[uv4Count];
+                for (int i = 0; i < uv4Count; i++)
+                    uv4s[i] = targetMesh.uv4[i];
+
+                newMesh.uv4 = uv4s;
+            }
+
+            
+            return newMesh;
+            */
         }
 
         

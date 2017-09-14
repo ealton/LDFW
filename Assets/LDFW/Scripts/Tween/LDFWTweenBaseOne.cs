@@ -12,7 +12,6 @@ namespace LDFW.Tween
 
         protected override void PreStart()
         {
-            Debug.Log("Prestart is called");
             curveCount = 1;
             fromValue = new float[curveCount];
             fromValue[0] = fromValueFloat;
