@@ -11,7 +11,7 @@ namespace LDFW.Tween
     public enum CurveStyle
     {
         Default,
-        Custom,
+        AnimationCurve,
 
         Linear,
         InBack,
