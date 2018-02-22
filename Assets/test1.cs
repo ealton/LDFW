@@ -1,25 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+using LDFW.Tween;
+
 public class test1 : MonoBehaviour {
 
-	// Use this for initialization
 	IEnumerator Start () {
-        yield return new WaitForSeconds(2);
 
+        transform
+            .TweenToPosition(new Vector3(1, 1, 1), 1, 0, true)
+            .SetTweenStyle(TweenStyle.PingPong);
+        transform
+            .TweenToScale(Vector3.zero, 1, 0, true)
+            .SetTweenStyle(TweenStyle.PingPong);
+        transform
+            .TweenToEulerAngles(Vector3.one * 360, 1, 0, true)
+            .SetTweenStyle(TweenStyle.PingPong);
 
-        Debug.Log("Set time scale = 0");
-        Time.timeScale = 0;
-        yield return new WaitForSeconds(2);
-
-
-        Debug.Log("Set time scale =1");
-        Time.timeScale = 1;
-
+        yield return null;
     }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

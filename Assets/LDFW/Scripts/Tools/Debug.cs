@@ -54,13 +54,13 @@ namespace LDFW.Tools
         
 #if UNITY_EDITOR
         
-        static Debug()
-        {
-            _instanceID = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/LDFW/Scripts/Tools/Debug.cs").GetInstanceID();
-            _logStackFrameList.Clear();
+        // static Debug()
+        // {
+        //     _instanceID = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/LDFW/Scripts/Tools/Debug.cs").GetInstanceID();
+        //     _logStackFrameList.Clear();
 
-            GetConsoleWindowListView();
-        }
+        //     GetConsoleWindowListView();
+        // }
 
         private static void GetConsoleWindowListView()
         {

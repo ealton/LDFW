@@ -32,7 +32,7 @@ namespace LDFW.Tween
                 }
             }
 
-            //ClearUpRemovableList();
+            ClearUpRemovableList();
         }
 
         public void AddTween(LDFWTweenBase tween)

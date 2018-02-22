@@ -4,10 +4,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace LDFW.Extensions
+namespace LDFW
 {
 
-    public static class CommonExtensions
+    public static partial class CommonExtensions
     {
 
         #region Transform

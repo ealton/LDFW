@@ -33,6 +33,11 @@ namespace LDFW.Tween
                     GUILayout.Label("T = " + tween.tweenTime.ToString("0.00") + " / " + tween.tweenDuration.ToString("0.00"));
                     GUILayout.Label(tween.isTweenPlaying ? "Is Playing" : "Is Not Playing");
                     GUILayout.Label(tween.isTweenBackwards ? "Pong" : "Ping");
+                    GUILayout.Label("".Concatenate(
+                        "A:", tween.autoPlay.ToString().Substring(0, 1), " ",
+                        "TS:", tween.ignoreTimeScale.ToString().Substring(0, 1), " ",
+                        "R:", tween.removeUponCompletion.ToString().Substring(0, 1), " ",
+                        "D:", tween.destroyTargetUponCompletion.ToString().Substring(0, 1)));
                 }
 
                 GUILayout.Space(10);

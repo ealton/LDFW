@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-using LDFW.Extensions;
-
 namespace LDFW.Model
 {
     

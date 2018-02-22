@@ -11,7 +11,7 @@ namespace LDFW.Tween
 
         public bool autoPlay = false;
         public bool ignoreTimeScale = false;
-        public bool removeUponCompletion = false;
+        public bool removeUponCompletion = true;
         public bool destroyTargetUponCompletion = false;
 
 
